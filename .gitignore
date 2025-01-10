@@ -1,0 +1,11 @@
+.env
+node_modules
+/src/firebase.js
+/src/firebaseAdmin.js
+/keys/
+/servicedata/
+/core/CryostellarEngine.cpp
+/core/eclipticaruntime.cpp
+/core/novamngr.cpp
+/core/XDebug.cpp
+/src/temp/
