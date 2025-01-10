@@ -1,12 +1,10 @@
 const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
 const admin = require('firebase-admin');
 const { getDatabase } = require('firebase-admin/database');
-
-// Initialize Firebase for the Roblox Project
 const robloxApp = admin.initializeApp(
     {
         credential: admin.credential.cert(require('../../keys/roblox-serviceAccountKey.json')),
-        databaseURL: 'https://qhdt-nexus-default-rtdb.firebaseio.com', // Replace with your RTDB URL
+        databaseURL: 'YOUR_FIREBASE_RTDB_URL_HERE',
     },
     'RobloxApp'
 );
@@ -46,7 +44,6 @@ module.exports = {
                         .setRequired(true))),
     async execute(interaction) {
         try {
-            // Check for required permissions
             if (!interaction.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
                 await interaction.reply({
                     content: '❌ You lack the permissions to use this command.',
@@ -54,28 +51,22 @@ module.exports = {
                 });
                 return;
             }
-
             const subcommand = interaction.options.getSubcommand();
             const userId = interaction.options.getString('userid');
             const reason = interaction.options.getString('reason');
             const mod = interaction.user.tag;
             const timestamp = new Date().toISOString();
-
             if (subcommand === 'warn') {
-                // Handle warnings
                 const warningsPath = `warnings/${userId}`;
                 const snapshot = await robloxDB.ref(warningsPath).get();
                 const warnings = snapshot.exists() ? snapshot.val() : [];
-
                 warnings.push({ reason, mod, timestamp });
                 await robloxDB.ref(warningsPath).set(warnings);
-
                 await interaction.reply({
                     content: `✅ Warned Roblox user \`${userId}\` for: **${reason}**`,
                     ephemeral: true,
                 });
             } else if (subcommand === 'ban') {
-                // Handle bans
                 const banPath = `bans/${userId}`;
                 await robloxDB.ref(banPath).set({ reason, mod, timestamp });
 
