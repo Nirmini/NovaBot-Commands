@@ -16,4 +16,7 @@ Please keep in mind some commands are from the beta for Nova.
 | `/unban` | :white_check_mark: |
 | `/ticket` | :white_check_mark: |
 | `/tban` | :white_check_mark: |
-To be continued.
+| `/rblx` | :x: |
+| `/basement` | :white_check_mark: |
+| `/snick` | :white_check_mark: |
+...
