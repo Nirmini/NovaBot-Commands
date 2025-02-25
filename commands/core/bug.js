@@ -11,7 +11,7 @@ module.exports = {
                 .setDescription('Describe the bug here.')
                 .setRequired(true)),
     async execute(interaction) {
-        const webhookURL = 'https://ptb.discord.com/api/webhooks/1325598669461913676/IMD_ky0KgTfx8-XQyP5301QN59VlMgaLMDIRkLl5myG6nrDI17_M-DQkZRNEty6oDg3m';
+        const webhookURL = 'https://ptb.discord.com/api/webhooks/...';
         const webhookClient = new WebhookClient({ url: webhookURL });
 
         const user = interaction.user;
