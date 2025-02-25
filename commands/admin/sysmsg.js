@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '1244118', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('sysmsg')
         .setDescription('Send a system message as an embed.')
@@ -46,7 +47,7 @@ module.exports = {
         if (interaction.user.id !== authorizedUID) {
             await interaction.reply({
                 content: '🟥 You are not authorized to use this command.',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             console.log(`Unauthorized access attempt by UID: ${interaction.user.id}`);
             return;
@@ -72,7 +73,8 @@ module.exports = {
         if (includeTimestamp) embed.setTimestamp();
 
         // Send the embed
-        await interaction.reply({ embeds: [embed] });
+        await interaction.reply({ content: 'Message sent!', flags: MessageFlags.Ephemeral });
+        await interaction.channel.send({ embeds: [embed] });
         console.log(`UID: ${interaction.user.id} successfully sent a system message.`);
     },
 };

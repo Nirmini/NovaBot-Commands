@@ -1,7 +1,8 @@
-const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, InteractionType } = require('discord.js');
+const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, InteractionType, MessageFlags } = require('discord.js');
 const noblox = require('noblox.js');
 
 module.exports = {
+    id: '9688368', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('verify')
         .setDescription('Verify your Roblox account to get the verified role.'),
@@ -33,7 +34,7 @@ module.exports = {
             // Step 3: Ask user to update their Roblox "About Me" section
             await interaction.reply({
                 content: `Please update your Roblox "About Me" section with the following code: \`${verificationCode}\`.\nAfter you have updated it, click the **Verify** button below.`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
                 components: [
                     {
                         type: 1, // ActionRow type
@@ -69,17 +70,17 @@ module.exports = {
 
                     if (verifiedRole) {
                         await interaction.member.roles.add(verifiedRole);
-                        await interaction.reply({ content: `You have been successfully verified and the **Employee** role has been granted!`, ephemeral: true });
+                        await interaction.reply({ content: `You have been successfully verified and the **Employee** role has been granted!`, flags: MessageFlags.Ephemeral });
                     } else {
-                        await interaction.reply({ content: `Could not find a role containing "Employee" in this server. Please contact an admin.`, ephemeral: true });
+                        await interaction.reply({ content: `Could not find a role containing "Employee" in this server. Please contact an admin.`, flags: MessageFlags.Ephemeral });
                     }
                 } else {
                     // Step 7: If code is not found in the profile
-                    await interaction.reply({ content: `Verification failed! It seems like the code was not found in your "About Me" section. Please make sure you've updated it correctly.`, ephemeral: true });
+                    await interaction.reply({ content: `Verification failed! It seems like the code was not found in your "About Me" section. Please make sure you've updated it correctly.`, flags: MessageFlags.Ephemeral });
                 }
             } catch (error) {
                 console.error(error);
-                await interaction.reply({ content: `There was an error verifying your Roblox account. Please try again.`, ephemeral: true });
+                await interaction.reply({ content: `There was an error verifying your Roblox account. Please try again.`, flags: MessageFlags.Ephemeral });
             }
         }
     }

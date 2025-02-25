@@ -1,9 +1,10 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const axios = require('axios');
 const { env } = require('process');
 require('dotenv').config();
 
 module.exports = {
+    id: '5657524', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('itunes')
         .setDescription('Search for iTunes media.')
@@ -21,7 +22,7 @@ module.exports = {
 
             const result = data.results[0];
             if (!result) {
-                return interaction.reply({ content: 'No results found.', ephemeral: true });
+                return interaction.reply({ content: 'No results found.', flags: MessageFlags.Ephemeral });
             }
 
             const embed = new EmbedBuilder()
@@ -37,7 +38,7 @@ module.exports = {
             await interaction.reply({ embeds: [embed] });
         } catch (error) {
             console.error('Error fetching iTunes data:', error);
-            await interaction.reply({ content: 'Failed to fetch iTunes media. Please try again.', ephemeral: true });
+            await interaction.reply({ content: 'Failed to fetch iTunes media. Please try again.', flags: MessageFlags.Ephemeral });
         }
     },
 };

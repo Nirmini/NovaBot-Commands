@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '1482716', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('testembed')
         .setDescription('Replies with an embed!'),
@@ -9,7 +10,7 @@ module.exports = {
 
         // Check if the user executing the command is the authorized user
         if (interaction.user.id !== authorizedUserId) {
-            await interaction.reply({ content: 'You are not authorized to use this command.', ephemeral: true });
+            await interaction.reply({ content: 'You are not authorized to use this command.', flags: MessageFlags.Ephemeral });
             return;
         }
 

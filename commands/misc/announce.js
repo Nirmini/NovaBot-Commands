@@ -1,6 +1,7 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '5343884', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('announce')
         .setDescription('Send an announcement to a specific channel.')
@@ -30,10 +31,10 @@ module.exports = {
         // Send the embed to the specified channel
         try {
             await targetChannel.send({ embeds: [announcementEmbed] });
-            await interaction.reply({ content: `Announcement sent to ${targetChannel}`, ephemeral: true });
+            await interaction.reply({ content: `Announcement sent to ${targetChannel}`, flags: MessageFlags.Ephemeral });
         } catch (error) {
             console.error(error);
-            await interaction.reply({ content: 'There was an error sending the announcement.', ephemeral: true });
+            await interaction.reply({ content: 'There was an error sending the announcement.', flags: MessageFlags.Ephemeral });
         }
     },
 };

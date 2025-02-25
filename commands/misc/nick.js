@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '5621784', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('nick')
         .setDescription('Set the bot\'s nickname in the guild')
@@ -14,7 +15,7 @@ module.exports = {
 
         // Check if the user has the required permissions
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageNicknames)) {
-            await interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
+            await interaction.reply({ content: 'You do not have permission to use this command.', flags: MessageFlags.Ephemeral });
             return;
         }
 

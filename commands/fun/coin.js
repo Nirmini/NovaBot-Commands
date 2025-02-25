@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, MessageEmbed } = require('discord.js');
+const { SlashCommandBuilder, MessageEmbed, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '4575518', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('coin')
         .setDescription('Flip a coin and see the result!'),
@@ -20,7 +21,7 @@ module.exports = {
             await interaction.reply({ embeds: [embed] });
         } catch (error) {
             console.error('Error executing /coin command:', error);
-            await interaction.reply({ content: 'An error occurred while flipping the coin. Please try again later.', ephemeral: true });
+            await interaction.reply({ content: 'An error occurred while flipping the coin. Please try again later.', flags: MessageFlags.Ephemeral });
         }
     },
 };

@@ -1,9 +1,10 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const axios = require('axios');
 const { env } = require('process');
 require('dotenv').config();
 
 module.exports = {
+    id: '5904576', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('spotify')
         .setDescription('Get information about a Spotify track.')
@@ -16,7 +17,7 @@ module.exports = {
         const trackId = url.split('/track/')[1]?.split('?')[0];
 
         if (!trackId) {
-            return interaction.reply({ content: 'Invalid Spotify URL.', ephemeral: true });
+            return interaction.reply({ content: 'Invalid Spotify URL.', flags: MessageFlags.Ephemeral });
         }
 
         try {
@@ -46,7 +47,7 @@ module.exports = {
             await interaction.reply({ embeds: [embed] });
         } catch (error) {
             console.error('Error fetching Spotify data:', error);
-            await interaction.reply({ content: 'Failed to fetch Spotify track. Please try again.', ephemeral: true });
+            await interaction.reply({ content: 'Failed to fetch Spotify track. Please try again.', flags: MessageFlags.Ephemeral });
         }
     },
 };

@@ -1,46 +1,37 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { PermissionsBitField, ChannelType } = require('discord.js');
-const { VoiceConnectionStatus, getVoiceConnection } = require('@discordjs/voice');
+const { PermissionsBitField, MessageFlags } = require('discord.js');
+const { getVoiceConnection } = require('@discordjs/voice');
 
 const EXEMPT_USER_ID = '600464355917692952'; // The exempted user ID
 
 module.exports = {
+    id: '1947383', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('leave')
-        .setDescription('Make the bot leave the voice channel or stage channel where the command was run'),
+        .setDescription('Make the bot leave the voice channel it is currently in'),
+    
     async execute(interaction) {
-        // Get the channel where the command was run
-        const channel = interaction.channel;
-
-        // Check if the command was run in a voice channel or stage channel
-        if (channel.type !== ChannelType.GuildVoice && channel.type !== ChannelType.GuildStageVoice) {
-            await interaction.reply({
-                content: 'This command can only be used in a voice channel or stage channel.',
-                ephemeral: true
-            });
-            return;
-        }
-
-        // Check if the user is either the exempt user or has the move members permission
-        const member = interaction.guild.members.cache.get(interaction.user.id);
-
-        if (interaction.user.id !== EXEMPT_USER_ID || !member.permissions.has(PermissionsBitField.Flags.MoveMembers)) {
-            await interaction.reply({
-                content: 'You do not have permission to use this command.',
-                ephemeral: true
-            });
-            return;
-        }
-
-        // Check if the bot is in a voice channel and has the necessary permissions
+        // Fetch the bot's voice connection
         const connection = getVoiceConnection(interaction.guild.id);
 
+        // Check if the bot is connected
         if (!connection) {
-            await interaction.reply({
-                content: 'The bot is not connected to a voice channel.',
-                ephemeral: true
+            return interaction.reply({
+                content: 'I am not connected to any voice channel.',
+                flags: MessageFlags.Ephemeral
             });
-            return;
+        }
+
+        // Get the bot's current voice channel
+        const botChannel = interaction.guild.channels.cache.get(connection.joinConfig.channelId);
+
+        // Validate the user’s permissions
+        const member = interaction.guild.members.cache.get(interaction.user.id);
+        if (interaction.user.id !== EXEMPT_USER_ID && !member.permissions.has(PermissionsBitField.Flags.MoveMembers)) {
+            return interaction.reply({
+                content: 'You do not have permission to use this command.',
+                flags: MessageFlags.Ephemeral
+            });
         }
 
         try {
@@ -48,14 +39,14 @@ module.exports = {
             connection.destroy();
 
             await interaction.reply({
-                content: `Left ${channel.name} successfully.`,
-                ephemeral: true
+                content: `Disconnected from **${botChannel.name}**.`,
+                flags: MessageFlags.Ephemeral
             });
         } catch (error) {
             console.error('Error leaving voice channel:', error);
             await interaction.reply({
                 content: 'An error occurred while trying to leave the voice channel.',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         }
     },

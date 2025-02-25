@@ -28,37 +28,37 @@ function checkDirectoryStatus(directoryPath) {
 }
 
 module.exports = {
+    id: '2881307', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('modules')
         .setDescription('Module Status.'),
     async execute(interaction) {
         const creditsEmbed = new EmbedBuilder()
-            .setColor(0x0099ff)
+            .setColor(0xac00ff)
             .setTitle('Nova Modules Status')
             .setAuthor({ name: 'Nova: XDebug' })
             .setThumbnail('https://i.imgur.com/nhqjXCq.png')
             .addFields(
-                { name: '> ## **Core Module Files**', value: '\u200B' },
-                { name: 'BotCore File:', value: checkModuleStatus('../../src/index.js') },
-                { name: 'Sharding Mngr:', value: checkModuleStatus('../../src/shard-monitor.js') },
-                { name: 'Nova Mngr:', value: checkModuleStatus('../../core/novamngr.cpp') },
-                { name: '> ## **Global Modules**', value: '\u200B' },
-                { name: 'ClientModule:', value: checkModuleStatus('../../core/global/Client.js') },
-                { name: 'Statuspage:', value: checkModuleStatus('../../core/global/statuspage.js') },
-                { name: 'CyroStellarEngine:', value: checkModuleStatus('../../core/CryostellarEngine.cpp') },
-                { name: 'EclipticaRuntime:', value: checkModuleStatus('../../core/eclipticaruntime.cpp') },
-                { name: '> ## **Command Modules**', value: '\u200B' },
-                { name: 'Admin:', value: checkDirectoryStatus('../admin') },
-                { name: 'Core:', value: checkDirectoryStatus('../core') },
-                { name: 'Event:', value: checkDirectoryStatus('../event') },
-                { name: 'Fun:', value: checkDirectoryStatus('../fun') },
-                { name: 'Misc:', value: checkDirectoryStatus('../misc') },
-                { name: 'Moderation:', value: checkDirectoryStatus('../moderation') },
-                { name: 'ROBLOX:', value: checkDirectoryStatus('../roblox') },
-                { name: 'UserMngmnt:', value: checkDirectoryStatus('../usermgmnt') },
+                { name: '> **Core Module Files**', value: 'Core files required for normal operations' },
+                { name: 'BotCore File:', value: 'BotCore File:' + checkModuleStatus('../../src/index.js') },
+                { name: 'Sharding Mngr:', value: 'Sharding Manager:' + checkModuleStatus('../../src/shard-monitor.js') },
+                { name: 'Database Mngr:', value: 'Database Manager:' + checkModuleStatus('../../src/firebaseAdmin.js') },
+                { name: '> **Global Modules**', value: 'Modules that are globally used in Nova.' },
+                { name: 'ClientModule:', value: 'Client Module:' + checkModuleStatus('../../core/global/Client.js') },
+                { name: 'Statuspage:', value: 'Statuspage:' + checkModuleStatus('../../core/global/statuspage.js') },
+                { name: 'Nova Atlas:', value: 'Atlas Module:' + checkModuleStatus('../../core/AtlasEngine.cpp') },
+                { name: '> **Command Modules**', value: 'Modules responsible for command management.' },
+                { name: 'Admin:', value: 'Admin Cmds:' + checkDirectoryStatus('../admin') },
+                { name: 'Core:', value: 'Core Cmds:' + checkDirectoryStatus('../core') },
+                { name: 'Events:', value: 'Event Cmds:' + checkDirectoryStatus('../event') },
+                { name: 'Fun:', value: 'Fun Cmds:' + checkDirectoryStatus('../fun') },
+                { name: 'Misc:', value: 'Misc Cmds:' + checkDirectoryStatus('../misc') },
+                { name: 'Moderation:', value: 'Moderation Cmds:' + checkDirectoryStatus('../moderation') },
+                { name: 'ROBLOX:', value: 'ROBLOX Cmds:' + checkDirectoryStatus('../roblox') },
+                { name: 'UserMngmnt:', value: 'User Mgmnt Cmds:' + checkDirectoryStatus('../usermgmnt') },
             )
             .setTimestamp()
-            .setFooter({ text: 'Have an amazing rest of your day! *mewo* - Blitz' });
+            .setFooter({ text: 'Have an amazing rest of your day! *mewo* - Frost' });
 
         await interaction.reply({ embeds: [creditsEmbed] });
     },

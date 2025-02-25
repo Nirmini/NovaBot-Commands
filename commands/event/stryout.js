@@ -1,8 +1,9 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField, MessageFlags } = require('discord.js');
 
 const botEmojiId = '1319480831303225354';
 
 module.exports = {
+    id: '3303076', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('stryout')
         .setDescription('Start an tryout')
@@ -28,13 +29,13 @@ module.exports = {
 
             // Check if the user has the required permissions
             if (!interaction.member.permissions.has(PermissionsBitField.Flags.CreateEvents)) {
-                await interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
+                await interaction.reply({ content: 'You do not have permission to use this command.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
             // Check if the resolved channel is valid
             if (!channel || !channel.isTextBased()) {
-                await interaction.reply({ content: 'The specified channel is not a valid text channel.', ephemeral: true });
+                await interaction.reply({ content: 'The specified channel is not a valid text channel.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
@@ -54,16 +55,16 @@ module.exports = {
             const embedMessage = await channel.send({ embeds: [tryoutEmbed] });
 
             // Confirm successful scheduling to the user
-            await interaction.reply({ content: 'tryout has been scheduled.', ephemeral: true });
+            await interaction.reply({ content: 'tryout has been scheduled.', flags: MessageFlags.Ephemeral });
         } catch (error) {
             // Log the error for debugging
             console.error('Error during /stryout command execution:', error);
 
             // Reply with a friendly error message
             if (!interaction.replied) {
-                await interaction.reply({ content: 'There was an error scheduling the tryout. Please try again later.', ephemeral: true });
+                await interaction.reply({ content: 'There was an error scheduling the tryout. Please try again later.', flags: MessageFlags.Ephemeral });
             } else {
-                await interaction.followUp({ content: 'An unexpected error occurred.', ephemeral: true });
+                await interaction.followUp({ content: 'An unexpected error occurred.', flags: MessageFlags.Ephemeral });
             }
         }
     },

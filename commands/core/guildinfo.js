@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 
 const verificationLevelMap = {
     NONE: 'None',
@@ -9,6 +9,7 @@ const verificationLevelMap = {
 };
 
 module.exports = {
+    id: '2860823', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('serverinfo')
         .setDescription('Get information about the server'),
@@ -19,7 +20,7 @@ module.exports = {
             if (!guild) {
                 return interaction.reply({
                     content: 'This command must be used within a server.',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             }
 
@@ -66,12 +67,12 @@ module.exports = {
             if (interaction.replied || interaction.deferred) {
                 await interaction.followUp({
                     content: 'An error occurred while fetching server information.',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             } else {
                 await interaction.reply({
                     content: 'An error occurred while fetching server information.',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             }
         }

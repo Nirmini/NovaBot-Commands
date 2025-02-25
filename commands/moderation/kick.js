@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '6105013', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('kick')
         .setDescription('Kick a user from the server')
@@ -17,7 +18,7 @@ module.exports = {
             // Check if the member has the required permissions
             if (!interaction.member.permissions.has(PermissionsBitField.Flags.ModerateMembers) ||
                 !interaction.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
-                await interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
+                await interaction.reply({ content: 'You do not have permission to use this command.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
@@ -27,7 +28,7 @@ module.exports = {
             const member = interaction.guild?.members.cache.get(user.id);
 
             if (!member) {
-                await interaction.reply({ content: 'The specified user is not in the server.', ephemeral: true });
+                await interaction.reply({ content: 'The specified user is not in the server.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
@@ -62,13 +63,13 @@ module.exports = {
                 await user.send({ embeds: [privateEmbed] });
             } catch (error) {
                 console.error('Error sending DM to user:', error);
-                await interaction.followUp({ content: 'User kicked, but failed to DM the user.', ephemeral: true });
+                await interaction.followUp({ content: 'User kicked, but failed to DM the user.', flags: MessageFlags.Ephemeral });
             }
 
         } catch (error) {
             console.error('Error during command execution:', error.message);
             console.error('Error details:', error.stack);
-            await interaction.reply({ content: 'An error occurred while processing the command.', ephemeral: true });
+            await interaction.reply({ content: 'An error occurred while processing the command.', flags: MessageFlags.Ephemeral });
         }
     },
 };

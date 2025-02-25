@@ -1,75 +1,48 @@
-const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, ChannelType, PermissionsBitField } = require('discord.js');
 
 module.exports = {
+    id: '6323282', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('unlock')
-        .setDescription('Unlock a channel to allow messages to be sent.')
+        .setDescription('Unlocks a given channel.')
         .addChannelOption(option =>
-            option
-                .setName('channel')
-                .setDescription('The channel to unlock.')
-                .setRequired(true)),
+            option.setName('channel')
+                .setDescription('The channel to unlock')
+                .setRequired(true)
+                .addChannelTypes(ChannelType.GuildText)
+        )
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
+
     async execute(interaction) {
+        const channel = interaction.options.getChannel('channel');
+
+        if (!channel) {
+            return interaction.reply({ content: '❌ Invalid channel.', ephemeral: true });
+        }
+
+        const roles = interaction.guild.roles.cache
+            .filter(role => channel.permissionOverwrites.cache.get(role.id)?.deny.has(PermissionsBitField.Flags.SendMessages))
+            .sort((a, b) => a.position - b.position); // Sort by hierarchy (lowest first)
+
+        const lowestRole = roles.first();
+
+        if (!lowestRole) {
+            return interaction.reply({ content: '❌ No locked roles found for this channel.', ephemeral: true });
+        }
+
         try {
-            const channel = interaction.options.getChannel('channel');
+            await channel.permissionOverwrites.edit(lowestRole, {
+                SendMessages: null // Reset permission to default
+            });
 
-            // Check if the user has permission to manage the channel
-            if (!interaction.member.permissionsIn(channel).has(PermissionsBitField.Flags.ManageChannels)) {
-                await interaction.reply({ content: 'You do not have permission to manage this channel.', ephemeral: true });
-                return;
-            }
+            return interaction.reply({
+                content: `🔓 Unlocked **${channel.name}** for **${lowestRole.name}**.`,
+                ephemeral: false
+            });
 
-            // Check if the bot has permission to manage the channel
-            if (!interaction.guild.members.me.permissionsIn(channel).has(PermissionsBitField.Flags.ManageChannels)) {
-                await interaction.reply({ content: 'I do not have permission to manage this channel.', ephemeral: true });
-                return;
-            }
-
-            // Defer the reply to avoid timeout
-            await interaction.deferReply({ ephemeral: true });
-
-            const errors = [];
-
-            // Iterate over all roles in the guild
-            for (const role of interaction.guild.roles.cache.values()) {
-                // Skip roles with Administrator permission
-                if (role.permissions.has(PermissionsBitField.Flags.Administrator)) {
-                    continue;
-                }
-
-                try {
-                    await channel.permissionOverwrites.edit(role, {
-                        SendMessages: null, // Reset permission to inherit from category/server
-                    }, { reason: `Unlock command executed by ${interaction.user.tag}` });
-                } catch (error) {
-                    // If it fails (e.g., role is above the bot), add the role name to the error list
-                    errors.push(role.name);
-                    console.error(`Failed to update permissions for role ${role.name}:`, error);
-                }
-            }
-
-            const embed = new EmbedBuilder()
-                .setTitle('Channel Unlocked')
-                .setDescription(`The channel <#${channel.id}> has been successfully unlocked.`)
-                .setColor(0x00ff00)
-                .setTimestamp();
-
-            let replyContent = { embeds: [embed] };
-
-            // If any errors occurred, include them in the response
-            if (errors.length > 0) {
-                replyContent.content = `Some roles could not be updated: ${errors.join(', ')}`;
-            }
-
-            await interaction.editReply(replyContent);
         } catch (error) {
             console.error('Error unlocking channel:', error);
-
-            if (interaction.replied || interaction.deferred) {
-                await interaction.followUp({ content: 'An error occurred while trying to unlock the channel.', ephemeral: true });
-            } else {
-                await interaction.reply({ content: 'An error occurred while trying to unlock the channel.', ephemeral: true });
-            }
+            return interaction.reply({ content: '❌ Failed to unlock the channel.', ephemeral: true });
         }
-    },
+    }
 };

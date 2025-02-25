@@ -1,8 +1,9 @@
-const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder, MessageFlags } = require('discord.js');
 const { setData, getData, updateData, deleteData } = require('../../src/firebaseAdmin'); // Admin SDK functions
 const { setTimeout } = require('timers/promises'); // To handle timed deletion
 
 module.exports = {
+    id: '6332759', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('case')
         .setDescription('Manage moderation cases')
@@ -73,7 +74,7 @@ module.exports = {
                 break;
 
             default:
-                await interaction.reply({ content: 'Invalid subcommand.', ephemeral: true });
+                await interaction.reply({ content: 'Invalid subcommand.', flags: MessageFlags.Ephemeral });
         }
     },
 };
@@ -119,7 +120,7 @@ async function handleCreateCase(interaction, guild, user) {
 
     await interaction.reply({
         content: `Case #${caseId} has been created in ${caseChannel}.`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
     });
 
     const embed = new EmbedBuilder()
@@ -141,13 +142,13 @@ async function handleAssignCase(interaction, guild) {
     // Check if the case exists
     const caseData = await getData(casesPath);
     if (!caseData) {
-        await interaction.reply({ content: `Case #${caseId} does not exist.`, ephemeral: true });
+        await interaction.reply({ content: `Case #${caseId} does not exist.`, flags: MessageFlags.Ephemeral });
         return;
     }
 
     const caseChannel = guild.channels.cache.get(caseData.channelId);
     if (!caseChannel) {
-        await interaction.reply({ content: `The channel for Case #${caseId} does not exist.`, ephemeral: true });
+        await interaction.reply({ content: `The channel for Case #${caseId} does not exist.`, flags: MessageFlags.Ephemeral });
         return;
     }
 
@@ -160,7 +161,7 @@ async function handleAssignCase(interaction, guild) {
         SendMessages: true,
     });
 
-    await interaction.reply({ content: `Case #${caseId} has been assigned to ${moderator.tag}.`, ephemeral: true });
+    await interaction.reply({ content: `Case #${caseId} has been assigned to ${moderator.tag}.`, flags: MessageFlags.Ephemeral });
 }
 
 // Handle case closure
@@ -171,13 +172,13 @@ async function handleCloseCase(interaction, guild) {
     // Check if the case exists
     const caseData = await getData(casesPath);
     if (!caseData) {
-        await interaction.reply({ content: `Case #${caseId} does not exist.`, ephemeral: true });
+        await interaction.reply({ content: `Case #${caseId} does not exist.`, flags: MessageFlags.Ephemeral });
         return;
     }
 
     const caseChannel = guild.channels.cache.get(caseData.channelId);
     if (!caseChannel) {
-        await interaction.reply({ content: `The channel for Case #${caseId} does not exist.`, ephemeral: true });
+        await interaction.reply({ content: `The channel for Case #${caseId} does not exist.`, flags: MessageFlags.Ephemeral });
         return;
     }
 
@@ -193,13 +194,13 @@ async function handleCloseCase(interaction, guild) {
         console.log(`Case #${caseId} data has been deleted.`);
     });
 
-    await interaction.reply({ content: `Case #${caseId} has been closed and the channel has been deleted.`, ephemeral: true });
+    await interaction.reply({ content: `Case #${caseId} has been closed and the channel has been deleted.`, flags: MessageFlags.Ephemeral });
 }
 
 // Handle case info
 async function handleCaseInfo(interaction, guild, member) {
     if (!member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
-        await interaction.reply({ content: 'You do not have permission to view case information.', ephemeral: true });
+        await interaction.reply({ content: 'You do not have permission to view case information.', flags: MessageFlags.Ephemeral });
         return;
     }
 
@@ -209,7 +210,7 @@ async function handleCaseInfo(interaction, guild, member) {
     // Retrieve case data
     const caseData = await getData(casesPath);
     if (!caseData) {
-        await interaction.reply({ content: `Case #${caseId} does not exist.`, ephemeral: true });
+        await interaction.reply({ content: `Case #${caseId} does not exist.`, flags: MessageFlags.Ephemeral });
         return;
     }
 
@@ -224,5 +225,5 @@ async function handleCaseInfo(interaction, guild, member) {
         .setColor(0x2f3136)
         .setTimestamp(caseData.createdAt);
 
-    await interaction.reply({ embeds: [embed], ephemeral: true });
+    await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
 }

@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '2080832', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('sponser')
         .setDescription('Sponser NPM Packages we use'),
@@ -35,13 +36,13 @@ module.exports = {
             await user.send({ embeds: [embed] });
             await interaction.reply({
                 content: 'I\'ve sent you a list of packages we use via DM.',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         } catch (error) {
             console.error('Error sending sponser DM:', error);
             await interaction.reply({
                 content: 'I was unable to send you a DM. Please check your DM settings and try again.',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         }
     },

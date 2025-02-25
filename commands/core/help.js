@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder,MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '2692226', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('help')
         .setDescription('Displays a list of available commands or details about a specific command.')
@@ -17,7 +18,7 @@ module.exports = {
             if (commandName) {
                 const command = commands.get(commandName);
                 if (!command) {
-                    await interaction.reply({ content: `Command \`${commandName}\` not found.`, ephemeral: true });
+                    await interaction.reply({ content: `Command \`${commandName}\` not found.`, flags: MessageFlags.Ephemeral });
                     return;
                 }
 
@@ -31,7 +32,7 @@ module.exports = {
                     )
                     .setTimestamp();
 
-                await interaction.reply({ embeds: [embed], ephemeral: true });
+                await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
             } else {
                 const embed = new EmbedBuilder()
                     .setTitle('Available Commands')
@@ -45,11 +46,11 @@ module.exports = {
                     )
                     .setTimestamp();
 
-                await interaction.reply({ embeds: [embed], ephemeral: true });
+                await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
             }
         } catch (error) {
             console.error('Error executing /help:', error);
-            await interaction.reply({ content: 'An error occurred while executing the command.', ephemeral: true });
+            await interaction.reply({ content: 'An error occurred while executing the command.', flags: MessageFlags.Ephemeral });
         }
     },
 };

@@ -1,6 +1,7 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '5861851', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('afk')
         .setDescription('Manage AFK status.')
@@ -28,7 +29,7 @@ module.exports = {
         if (subcommand === 'set') {
             // Handle AFK set
             if (!member.manageable) {
-                return interaction.reply({ content: `I can't change your nickname, ${interaction.user.username}.`, ephemeral: true });
+                return interaction.reply({ content: `I can't change your nickname, ${interaction.user.username}.`, flags: MessageFlags.Ephemeral });
             }
 
             const nickname = member.nickname || member.user.username;
@@ -41,7 +42,7 @@ module.exports = {
         } else if (subcommand === 'return') {
             // Handle AFK return
             if (!member.manageable) {
-                return interaction.reply({ content: `I can't change your nickname, ${interaction.user.username}.`, ephemeral: true });
+                return interaction.reply({ content: `I can't change your nickname, ${interaction.user.username}.`, flags: MessageFlags.Ephemeral });
             }
 
             const nickname = member.nickname || member.user.username;
@@ -55,13 +56,13 @@ module.exports = {
         } else if (subcommand === 'remove') {
             // Handle AFK remove
             if (!interaction.member.permissions.has('ManageNicknames')) {
-                return interaction.reply({ content: 'You do not have permission to manage nicknames.', ephemeral: true });
+                return interaction.reply({ content: 'You do not have permission to manage nicknames.', flags: MessageFlags.Ephemeral });
             }
 
             const target = interaction.options.getMember('user');
 
             if (!target.manageable) {
-                return interaction.reply({ content: `I can't change the nickname for ${target.user.username}.`, ephemeral: true });
+                return interaction.reply({ content: `I can't change the nickname for ${target.user.username}.`, flags: MessageFlags.Ephemeral });
             }
 
             const nickname = target.nickname || target.user.username;

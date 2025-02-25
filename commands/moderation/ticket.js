@@ -1,7 +1,8 @@
-const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, MessageFlags } = require('discord.js');
 const { setData, getData, updateData, deleteData } = require('../../src/firebaseAdmin'); // Admin SDK functions
 
 module.exports = {
+    id: '6094274', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('ticket')
         .setDescription('Manage tickets')
@@ -104,12 +105,12 @@ async function handleAssignTicket(interaction, ticketsPath, ticketId, user) {
     const guild = interaction.guild;
     const ticketData = await getData(`${ticketsPath}/${ticketId}`);
     if (!ticketData) {
-        return interaction.reply({ content: `Ticket #${ticketId} does not exist.`, ephemeral: true });
+        return interaction.reply({ content: `Ticket #${ticketId} does not exist.`, flags: MessageFlags.Ephemeral });
     }
 
     const ticketChannel = guild.channels.cache.get(ticketData.channelId);
     if (!ticketChannel) {
-        return interaction.reply({ content: `Ticket channel for #${ticketId} no longer exists.`, ephemeral: true });
+        return interaction.reply({ content: `Ticket channel for #${ticketId} no longer exists.`, flags: MessageFlags.Ephemeral });
     }
 
     await ticketChannel.permissionOverwrites.create(user.id, {
@@ -126,11 +127,11 @@ async function handleCloseTicket(interaction, ticketsPath, ticketId) {
     const ticketData = await getData(`${ticketsPath}/${ticketId}`);
 
     if (!ticketData) {
-        return interaction.reply({ content: `Ticket #${ticketId} does not exist.`, ephemeral: true });
+        return interaction.reply({ content: `Ticket #${ticketId} does not exist.`, flags: MessageFlags.Ephemeral });
     }
 
     if (ticketData.userId !== user.id) {
-        return interaction.reply({ content: `You can only close tickets you opened.`, ephemeral: true });
+        return interaction.reply({ content: `You can only close tickets you opened.`, flags: MessageFlags.Ephemeral });
     }
 
     const ticketChannel = guild.channels.cache.get(ticketData.channelId);

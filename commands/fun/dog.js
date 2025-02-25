@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const axios = require('axios');
 
 module.exports = {
+    id: '4958930', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('dog')
         .setDescription('Fetches a random dog image'),

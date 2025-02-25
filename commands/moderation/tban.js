@@ -1,7 +1,8 @@
-const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, MessageFlags } = require('discord.js');
 const ms = require('ms');
 
 module.exports = {
+    id: '6013696', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('tban')
         .setDescription('Temporarily ban a user')
@@ -26,18 +27,18 @@ module.exports = {
         // Check if the duration is valid and within the limit
         const duration = ms(time);
         if (!duration || duration > ms('14d')) {
-            await interaction.reply({ content: 'Invalid duration. Please specify a duration up to 14 days (e.g., 1d, 2h, 30m).', ephemeral: true });
+            await interaction.reply({ content: 'Invalid duration. Please specify a duration up to 14 days (e.g., 1d, 2h, 30m).', flags: MessageFlags.Ephemeral });
             return;
         }
 
         // Check if the user has the required permissions
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
-            await interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
+            await interaction.reply({ content: 'You do not have permission to use this command.', flags: MessageFlags.Ephemeral });
             return;
         }
 
         if (!member.bannable) {
-            await interaction.reply({ content: 'I cannot ban this user. They might have higher permissions or be the server owner.', ephemeral: true });
+            await interaction.reply({ content: 'I cannot ban this user. They might have higher permissions or be the server owner.', flags: MessageFlags.Ephemeral });
             return;
         }
 

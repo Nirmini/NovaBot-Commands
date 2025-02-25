@@ -1,8 +1,9 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 
 const activeReminders = new Map(); // Keeps track of reminders for each user
 
 module.exports = {
+    id: '2306341', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('remind')
         .setDescription('Set a reminder.')
@@ -24,7 +25,7 @@ module.exports = {
         if (!timeMatch) {
             return interaction.reply({
                 content: 'Invalid time format. Use `<number><unit>` (e.g., 10m, 2h, 1d).',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         }
 
@@ -37,7 +38,7 @@ module.exports = {
         if (timeMs > 7 * 86400000) {
             return interaction.reply({
                 content: 'Time exceeds the maximum limit of 7 days.',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         }
 
@@ -46,7 +47,7 @@ module.exports = {
         if (userReminders.length >= 4) {
             return interaction.reply({
                 content: 'You have reached the maximum of 4 active reminders. Please wait or cancel one.',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         }
 
@@ -70,7 +71,7 @@ module.exports = {
 
         await interaction.reply({
             content: `✅ Reminder set for ${timeInput}: "${reminderText}"`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
     },
 };

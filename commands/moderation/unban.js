@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '6403000', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('unban')
         .setDescription('Unban a user from the server.')
@@ -22,13 +23,13 @@ module.exports = {
             
             // Check if the executor has permission to ban members
             if (!interaction.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
-                await interaction.reply({ content: 'You do not have permission to unban members.', ephemeral: true });
+                await interaction.reply({ content: 'You do not have permission to unban members.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
             // Check if the bot has permission to unban members
             if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.BanMembers)) {
-                await interaction.reply({ content: 'I do not have permission to unban members.', ephemeral: true });
+                await interaction.reply({ content: 'I do not have permission to unban members.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
@@ -37,7 +38,7 @@ module.exports = {
 
             // If no valid user found, reply with an error
             if (!user) {
-                await interaction.reply({ content: `Invalid User ID or username: "${userInput}". Please ensure it's correct.`, ephemeral: true });
+                await interaction.reply({ content: `Invalid User ID or username: "${userInput}". Please ensure it's correct.`, flags: MessageFlags.Ephemeral });
                 return;
             }
 
@@ -60,9 +61,9 @@ module.exports = {
         } catch (error) {
             console.error('Error unbanning user:', error);
             if (error.message.includes('Unknown Ban')) {
-                await interaction.reply({ content: 'This user is not currently banned.', ephemeral: true });
+                await interaction.reply({ content: 'This user is not currently banned.', flags: MessageFlags.Ephemeral });
             } else {
-                await interaction.reply({ content: 'An error occurred while attempting to unban the user.', ephemeral: true });
+                await interaction.reply({ content: 'An error occurred while attempting to unban the user.', flags: MessageFlags.Ephemeral });
             }
         }
     },

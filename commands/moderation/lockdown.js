@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '6739556', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('lockdown')
         .setDescription('Manage lockdown state for all text channels.')
@@ -18,7 +19,7 @@ module.exports = {
             if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
                 return interaction.reply({
                     content: 'You need the "Manage Channels" permission to use this command.',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             }
 
@@ -26,7 +27,7 @@ module.exports = {
             if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
                 return interaction.reply({
                     content: 'I need the "Manage Roles" permission to execute this command.',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             }
 
@@ -43,7 +44,7 @@ module.exports = {
             if (channels.size === 0) {
                 return interaction.reply({
                     content: 'I could not find any text channels I have permission to modify.',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             }
 
@@ -100,12 +101,12 @@ module.exports = {
             if (interaction.replied || interaction.deferred) {
                 await interaction.followUp({
                     content: 'An error occurred while executing the lockdown. Please try again later.',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             } else {
                 await interaction.reply({
                     content: 'An error occurred while executing the lockdown. Please try again later.',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             }
         }

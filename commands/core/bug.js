@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, WebhookClient } = require('discord.js');
+const { SlashCommandBuilder, WebhookClient, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '2546290', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('bug')
         .setDescription('Send a report to the NDT.')
@@ -18,7 +19,7 @@ module.exports = {
         const bugreport = interaction.options.getString('bugdesc') || '';
 
         if (bugreport.length > 80) {
-            interaction.reply({ content:'You\'re description is too long. Please try to shorten it or report it directly.', ephemeral: true});
+            interaction.reply({ content:'You\'re description is too long. Please try to shorten it or report it directly.', flags: MessageFlags.Ephemeral });
             return;
         }
 
@@ -30,10 +31,10 @@ module.exports = {
             await webhookClient.send({ content: bugreportmsg });
 
             // Acknowledge the report
-            await interaction.reply({ content: '✅ Your report has been submitted.', ephemeral: true });
+            await interaction.reply({ content: '✅ Your report has been submitted.', flags: MessageFlags.Ephemeral });
         } catch (error) {
             console.error('Error sending report via webhook:', error);
-            await interaction.reply({ content: '❌ Failed to submit your report. Please try again later.', ephemeral: true });
+            await interaction.reply({ content: '❌ Failed to submit your report. Please try again later.', flags: MessageFlags.Ephemeral });
         }
     },
 };

@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '6725600', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('mute')
         .setDescription('Mute a user for a specified duration.')
@@ -28,32 +29,32 @@ module.exports = {
 
             // Check if the target is in the guild
             if (!member) {
-                await interaction.reply({ content: 'The specified user is not in this server.', ephemeral: true });
+                await interaction.reply({ content: 'The specified user is not in this server.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
             // Check if the executor has permission to moderate members
             if (!interaction.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
-                await interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
+                await interaction.reply({ content: 'You do not have permission to use this command.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
             // Check if the bot has permission to moderate members
             if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
-                await interaction.reply({ content: 'I do not have permission to mute members.', ephemeral: true });
+                await interaction.reply({ content: 'I do not have permission to mute members.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
             // Check role hierarchy
             if (member.roles.highest.position >= interaction.guild.members.me.roles.highest.position) {
-                await interaction.reply({ content: 'I cannot mute this user due to role hierarchy.', ephemeral: true });
+                await interaction.reply({ content: 'I cannot mute this user due to role hierarchy.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
             // Check for valid duration
             const durationMs = parseDuration(time);
             if (!durationMs || durationMs > 28 * 24 * 60 * 60 * 1000) {
-                await interaction.reply({ content: 'Invalid time duration. Ensure it is valid and less than 28 days.', ephemeral: true });
+                await interaction.reply({ content: 'Invalid time duration. Ensure it is valid and less than 28 days.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
@@ -89,11 +90,11 @@ module.exports = {
                 await target.send({ embeds: [dmEmbed] });
             } catch (error) {
                 console.error('Failed to send DM:', error);
-                await interaction.followUp({ content: 'The user was muted, but I was unable to DM them.', ephemeral: true });
+                await interaction.followUp({ content: 'The user was muted, but I was unable to DM them.', flags: MessageFlags.Ephemeral });
             }
         } catch (error) {
             console.error('Error muting user:', error);
-            await interaction.reply({ content: 'An error occurred while trying to mute the user.', ephemeral: true });
+            await interaction.reply({ content: 'An error occurred while trying to mute the user.', flags: MessageFlags.Ephemeral });
         }
     },
 };

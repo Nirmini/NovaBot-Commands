@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '5905507', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('whois')
         .setDescription('Get public information about a user')
@@ -68,7 +69,7 @@ module.exports = {
             await interaction.reply({ embeds: [whoisEmbed] });
         } catch (error) {
             console.error('Error fetching user info:', error);
-            await interaction.reply({ content: 'There was an error fetching the user information.', ephemeral: true });
+            await interaction.reply({ content: 'There was an error fetching the user information.', flags: MessageFlags.Ephemeral });
         }
     },
 };

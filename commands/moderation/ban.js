@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '6975089', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('ban')
         .setDescription('Permanently ban a user')
@@ -20,12 +21,12 @@ module.exports = {
 
         // Check if the user has the required permissions
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
-            await interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
+            await interaction.reply({ content: 'You do not have permission to use this command.', flags: MessageFlags.Ephemeral });
             return;
         }
 
         if (!member.bannable) {
-            await interaction.reply({ content: 'I cannot ban this user. They might have higher permissions or be the server owner.', ephemeral: true });
+            await interaction.reply({ content: 'I cannot ban this user. They might have higher permissions or be the server owner.', flags: MessageFlags.Ephemeral });
             return;
         }
 

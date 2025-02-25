@@ -1,6 +1,7 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '0382881', // Unique 6-digit command ID
     /**
      * Executes the uptime command.
      * @param {import('discord.js').Message} message - The message object from Discord.js.
@@ -18,7 +19,7 @@ module.exports = {
             await message.reply({ embeds: [embed] });
         } catch (error) {
             console.error('Error executing uptime command:', error);
-            message.reply('An error occurred while processing the uptime command.');
+            message.reply({ content: 'An error occurred while processing the uptime command.', flags: MessageFlags.Ephemeral });
         }
     },
 };

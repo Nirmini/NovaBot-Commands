@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '9509674', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('temprole')
         .setDescription('Assign a role to a user temporarily.')
@@ -27,20 +28,20 @@ module.exports = {
 
             // Check if the user running the command has Manage Roles permission
             if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
-                await interaction.reply({ content: 'You do not have permission to assign roles.', ephemeral: true });
+                await interaction.reply({ content: 'You do not have permission to assign roles.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
             // Check if the bot has Manage Roles permission
             if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
-                await interaction.reply({ content: 'I do not have permission to manage roles.', ephemeral: true });
+                await interaction.reply({ content: 'I do not have permission to manage roles.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
             // Ensure the role is lower in the hierarchy than the bot's top role
             const botHighestRole = interaction.guild.members.me.roles.highest.position;
             if (role.position >= botHighestRole) {
-                await interaction.reply({ content: 'I cannot assign this role because it is higher than or equal to my highest role.', ephemeral: true });
+                await interaction.reply({ content: 'I cannot assign this role because it is higher than or equal to my highest role.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
@@ -48,7 +49,7 @@ module.exports = {
             const timeRegex = /^(\d+)([smhd])$/; // Matches numbers followed by s, m, h, or d
             const match = time.match(timeRegex);
             if (!match) {
-                await interaction.reply({ content: 'Invalid time format. Use a number followed by s (seconds), m (minutes), h (hours), or d (days).', ephemeral: true });
+                await interaction.reply({ content: 'Invalid time format. Use a number followed by s (seconds), m (minutes), h (hours), or d (days).', flags: MessageFlags.Ephemeral });
                 return;
             }
 
@@ -63,14 +64,14 @@ module.exports = {
             // Add the role to the user
             const member = interaction.guild.members.cache.get(user.id);
             if (!member) {
-                await interaction.reply({ content: 'User not found in the server.', ephemeral: true });
+                await interaction.reply({ content: 'User not found in the server.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
             await member.roles.add(role);
             await interaction.reply({
                 content: `${role} has been assigned to ${user} for ${time}.`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
 
             const embed = new EmbedBuilder()
@@ -108,7 +109,7 @@ module.exports = {
 
         } catch (error) {
             console.error('Error executing /temprole command:', error);
-            await interaction.reply({ content: 'An error occurred while processing the command.', ephemeral: true });
+            await interaction.reply({ content: 'An error occurred while processing the command.', flags: MessageFlags.Ephemeral });
         }
     },
 };

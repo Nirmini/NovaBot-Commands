@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '2258051', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('premium')
         .setDescription('Info About Nova Premium.'),
@@ -22,13 +23,13 @@ module.exports = {
             .setTimestamp()
             .setFooter({ text: 'Have an amazing rest of your day! *mewo* - Blitz' });
 
-            await interaction.deferReply({ ephemeral: true });
+            await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
             try {
                 await interaction.user.send({ embeds: [creditsEmbed] });
                 await interaction.editReply({
                     content: 'Sent!',
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
             } catch (error) {
                 console.error('Failed to send DM:', error);

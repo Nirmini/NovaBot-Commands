@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
+    id: '0725283', // Unique 6-digit command ID
     /**
      * Executes the kick command.
      * @param {import('discord.js').Message} message - The message object from Discord.js.

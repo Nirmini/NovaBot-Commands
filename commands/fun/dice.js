@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
+    id: '4288538', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('dice')
         .setDescription('Roll a dice with the specified number of sides.')
@@ -26,3 +27,4 @@ module.exports = {
         await interaction.reply(`🎲 You rolled a d${sides} and got **${result}**!`);
     },
 };
+// Might add d28, d50, and d100

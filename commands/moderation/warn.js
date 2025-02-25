@@ -1,7 +1,8 @@
-const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder, MessageFlags } = require('discord.js');
 const { setData, getData } = require('../../src/firebaseAdmin'); // Admin SDK functions
 
 module.exports = {
+    id: '6161901', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('warn')
         .setDescription('Warn a user')
@@ -21,7 +22,7 @@ module.exports = {
         try {
             // Check for necessary permissions
             if (!interaction.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
-                await interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
+                await interaction.reply({ content: 'You do not have permission to use this command.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
@@ -42,7 +43,7 @@ module.exports = {
                 // Parse expiration input
                 const durationMatch = expiresInput.match(/^(\d+)([dmy])$/); // Matches "30d", "1y", etc.
                 if (!durationMatch) {
-                    await interaction.reply({ content: 'Invalid expiration format. Use "Xd", "Xm", or "Xy" (e.g., "30d").', ephemeral: true });
+                    await interaction.reply({ content: 'Invalid expiration format. Use "Xd", "Xm", or "Xy" (e.g., "30d").', flags: MessageFlags.Ephemeral });
                     return;
                 }
 
@@ -114,12 +115,12 @@ module.exports = {
                 await user.send({ embeds: [privateEmbed] });
             } catch (error) {
                 console.error('Error sending DM to user:', error);
-                await interaction.followUp({ content: 'Warning sent, but failed to DM the user.', ephemeral: true });
+                await interaction.followUp({ content: 'Warning sent, but failed to DM the user.', flags: MessageFlags.Ephemeral });
             }
         } catch (error) {
             console.error('Error during command execution:', error.message);
             console.error('Error details:', error.stack);
-            await interaction.reply({ content: 'An error occurred while processing the command.', ephemeral: true });
+            await interaction.reply({ content: 'An error occurred while processing the command.', flags: MessageFlags.Ephemeral });
         }
     },
 };

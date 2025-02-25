@@ -1,7 +1,8 @@
-const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
-const { db, ref, get, update } = require('../../src/firebase');
+const { SlashCommandBuilder, PermissionsBitField, MessageFlags } = require('discord.js');
+const { getData, setData, removeData } = require('../../src/firebaseAdmin'); // Use Admin SDK
 
 module.exports = {
+    id: '6659812', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('delwarn')
         .setDescription('Delete a specific warning from a user')
@@ -17,7 +18,7 @@ module.exports = {
         try {
             console.log('Checking permissions...');
             if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
-                await interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
+                await interaction.reply({ content: 'You do not have permission to use this command.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
@@ -29,33 +30,34 @@ module.exports = {
 
             console.log(`User: ${userId}, Guild: ${guildId}, WarnNumber: ${warnNumber}`);
             
-            const userWarningsRef = ref(db, `${guildId}/warnings/${userId}`);
-            const snapshot = await get(userWarningsRef);
+            const userWarningsPath = `/warnings/${guildId}/${userId}`;
+            const warnings = await getData(userWarningsPath);
 
-            if (!snapshot.exists()) {
-                await interaction.reply({ content: 'This user has no warnings.', ephemeral: true });
+            if (!warnings) {
+                await interaction.reply({ content: 'This user has no warnings.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
-            let warnings = snapshot.val();
-
-            if (warnNumber < 1 || warnNumber > warnings.length) {
-                await interaction.reply({ content: 'Invalid warning number.', ephemeral: true });
+            const warningKeys = Object.keys(warnings);
+            if (warnNumber < 1 || warnNumber > warningKeys.length) {
+                await interaction.reply({ content: 'Invalid warning number.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
-            warnings.splice(warnNumber - 1, 1); // Remove the specific warning
-
-            const updates = {};
-            updates[`warnings/${userId}/${guildId}`] = warnings;
+            const warnId = warningKeys[warnNumber - 1];
+            delete warnings[warnId]; // Remove the specific warning
 
             console.log('Updating database...');
-            await update(ref(db), updates);
+            if (Object.keys(warnings).length > 0) {
+                await setData(userWarningsPath, warnings);
+            } else {
+                await removeData(userWarningsPath);
+            }
 
-            await interaction.reply({ content: `Warning #${warnNumber} for ${user.tag} has been deleted.`, ephemeral: false });
+            await interaction.reply({ content: `Warning #${warnNumber} for ${user.tag} has been deleted.`, flags: MessageFlags.Ephemeral });
         } catch (error) {
             console.error('Error deleting warning:', error);
-            await interaction.reply({ content: 'There was an error deleting the warning. Please try again later.', ephemeral: true });
+            await interaction.reply({ content: 'There was an error deleting the warning. Please try again later.', flags: MessageFlags.Ephemeral });
         }
     },
 };

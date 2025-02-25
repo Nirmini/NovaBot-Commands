@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
+    id: '2159245', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('info')
         .setDescription('Info About Nova.'),
@@ -18,8 +19,9 @@ module.exports = {
                 { name: '\u200B', value: '\u200B' }
             )
             .setTimestamp()
-            .setFooter({ text: 'Have an amazing rest of your day! *mewo* - Blitz' });
+            .setFooter({ text: 'Nova - Nirmini Development' });
 
         await interaction.user.send({ embeds: [creditsEmbed] });
     },
 };
+// TO BE UPDATED

@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
+    id: '0650011', // Unique 6-digit command ID
     /**
      * Executes the ban command.
      * @param {import('discord.js').Message} message - The message object from Discord.js.

@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '2989703', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('members')
         .setDescription('Get information about server members'),
@@ -31,7 +32,7 @@ module.exports = {
             await interaction.reply({ embeds: [embed] });
         } catch (error) {
             console.error('Error executing /members:', error);
-            await interaction.reply({ content: 'An error occurred while fetching member information.', ephemeral: true });
+            await interaction.reply({ content: 'An error occurred while fetching member information.', flags: MessageFlags.Ephemeral });
         }
     },
 };

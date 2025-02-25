@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
+    id: '5911899', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('uptime')
         .setDescription('Displays the bot\'s uptime.'),
@@ -25,3 +26,4 @@ module.exports = {
         await interaction.reply({ embeds: [embed] });
     },
 };
+// Possibly import the ms package into this

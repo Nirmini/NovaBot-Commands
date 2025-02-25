@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '6126481', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('role')
         .setDescription('Manage roles in the server.')
@@ -58,10 +59,10 @@ module.exports = {
                     reason: `Role created by ${interaction.user.tag}`,
                 });
 
-                await interaction.reply({ content: `✅ Role **${role.name}** created successfully.`, ephemeral: true });
+                await interaction.reply({ content: `✅ Role **${role.name}** created successfully.`, flags: MessageFlags.Ephemeral });
             } catch (error) {
                 console.error('Error creating role:', error);
-                await interaction.reply({ content: '❌ Failed to create role. Ensure I have the necessary permissions.', ephemeral: true });
+                await interaction.reply({ content: '❌ Failed to create role. Ensure I have the necessary permissions.', flags: MessageFlags.Ephemeral });
             }
         } else if (subcommand === 'edit') {
             const role = interaction.options.getRole('role');
@@ -69,7 +70,7 @@ module.exports = {
             const newColour = interaction.options.getString('colour');
 
             if (!newName && !newColour) {
-                return interaction.reply({ content: '❌ You must provide either a new name or a new color to edit.', ephemeral: true });
+                return interaction.reply({ content: '❌ You must provide either a new name or a new color to edit.', flags: MessageFlags.Ephemeral });
             }
 
             try {
@@ -79,20 +80,20 @@ module.exports = {
                     reason: `Role edited by ${interaction.user.tag}`,
                 });
 
-                await interaction.reply({ content: `✅ Role **${role.name}** updated successfully.`, ephemeral: true });
+                await interaction.reply({ content: `✅ Role **${role.name}** updated successfully.`, flags: MessageFlags.Ephemeral });
             } catch (error) {
                 console.error('Error editing role:', error);
-                await interaction.reply({ content: '❌ Failed to edit role. Ensure I have the necessary permissions.', ephemeral: true });
+                await interaction.reply({ content: '❌ Failed to edit role. Ensure I have the necessary permissions.', flags: MessageFlags.Ephemeral });
             }
         } else if (subcommand === 'remove') {
             const role = interaction.options.getRole('role');
 
             try {
                 await role.delete(`Role removed by ${interaction.user.tag}`);
-                await interaction.reply({ content: `✅ Role **${role.name}** removed successfully.`, ephemeral: true });
+                await interaction.reply({ content: `✅ Role **${role.name}** removed successfully.`, flags: MessageFlags.Ephemeral });
             } catch (error) {
                 console.error('Error removing role:', error);
-                await interaction.reply({ content: '❌ Failed to remove role. Ensure I have the necessary permissions.', ephemeral: true });
+                await interaction.reply({ content: '❌ Failed to remove role. Ensure I have the necessary permissions.', flags: MessageFlags.Ephemeral });
             }
         }
     },

@@ -1,10 +1,11 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const path = require('path');
 
 // List of user UIDs allowed to see detailed error messages and file paths
 const authorizedUIDs = ['600464355917692952', '1296245929292206135']; // Replace with actual UIDs
 
 module.exports = {
+    id: '2285719', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('diagnose')
         .setDescription('Check if a specified code file is working.')
@@ -15,9 +16,13 @@ module.exports = {
                 .setRequired(true)
         ),
     async execute(interaction) {
-        const filename = interaction.options.getString('filename');
-        const localPath = `../../src/${filename}.js`; // Local relative path for display
-        const filepath = path.resolve(__dirname, localPath);
+        let filename = interaction.options.getString('filename');
+
+        // Sanitize filename to prevent directory traversal
+        filename = filename.replace(/[.\/\\]/g, ''); 
+
+        const localPath = `src/${filename}.js`; // Local relative path for display
+        const filepath = path.resolve(__dirname, `../../${localPath}`);
 
         // Log the request to the console
         console.log(`${interaction.user.id} requested status of module "${filename}.js"`);
@@ -37,7 +42,7 @@ module.exports = {
                 embed.addFields({ name: 'Path', value: localPath });
             }
 
-            await interaction.reply({ embeds: [embed], ephemeral: true });
+            await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
         } catch (error) {
             console.error(`Error diagnosing file "${filename}":`, error);
 
@@ -60,7 +65,7 @@ module.exports = {
                 });
             }
 
-            await interaction.reply({ embeds: [embed], ephemeral: true });
+            await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
         }
     },
 };

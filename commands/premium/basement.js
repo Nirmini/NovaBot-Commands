@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 
 module.exports = {
+    id: '7251908', // Unique 6-digit command ID
     data: new SlashCommandBuilder()
         .setName('basement')
         .setDescription('Send a user to the basement [PARTNERS & PREMIUM]')
@@ -23,7 +24,7 @@ module.exports = {
         if (!member.voice.channel) {
             return interaction.reply({
                 content: `${targetUser.tag} is not in a voice channel.`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         }
 
@@ -31,7 +32,7 @@ module.exports = {
         if (member.voice.channel.id === targetVC.id) {
             return interaction.reply({
                 content: `${targetUser.tag} is already in the specified voice channel.`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         }
 
@@ -40,13 +41,13 @@ module.exports = {
             await member.voice.setChannel(targetVC);
             await interaction.reply({
                 content: `✅ Successfully moved ${targetUser.tag} to **${targetVC.name}**.`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         } catch (error) {
             console.error(`Error moving ${targetUser.tag}:`, error);
             await interaction.reply({
                 content: `❌ Failed to move ${targetUser.tag}.`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         }
     },
